@@ -47,12 +47,7 @@ class User(db.Model):
     def verify_passwords(self, password):
         return pwd_context.verify(password, self.password)
 
-    #method to verify that entered password is equal to hashed password
-    # def verify_password(self, password):
-    #     return pwd_context.verify(password, self.password_hash)
-
-    #method to generate a token
-    #@auth.login_required# User, Session, auth, RecipeCategory, Recipes,
+    
     def generate_auth_token(self, expiration = 600):
         s = Serializer(secret_key, expires_in = expiration)
         return s.dumps({ 'userid': self.userid })
@@ -89,12 +84,9 @@ class User(db.Model):
         # user = User.query.get(data['userid'])
         return user
 
-    #method to get a token
-    #@auth.verify_password
-    # def verify_password(username_or_token, password):
-   
+    
           
-    #
+    
 class RecipeCategory(db.Model):
     __tablename__ = 'recipe_category'
     category_id = db.Column(db.Integer, primary_key = True)
@@ -119,13 +111,11 @@ class RecipeCategory(db.Model):
     def get_all_users():
         return RecipeCategory.query.all()
 
-    #method to require login
-    # @auth.login_required
-    # def create_category(self):
+   
         
         
 
-    #tells python how to print objects of this class
+    
     def __repr__(self):
         return '<Category %r>' % (self.category_name)
 

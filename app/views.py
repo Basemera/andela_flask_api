@@ -50,7 +50,32 @@ class AddUser(Resource):
             return ({'message': 'User doesnot exist'})
         return ({'userid':user.userid})
 
+class Login(Resource):
+    
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('username', type = str)
+        parser.add_argument('password', type = str)
+        args = parser.parse_args()
+        username = args['username']
+        password = args['password']
         
+        users = User.query.filter_by(username = username).first()
+        if users and password:
+            
+           
+            user = User.verify_password(username, password)
+            
+            if user:
+                token = g.user.generate_auth_token()
+                user = g.user
+                return jsonify({ 'token': token.decode('ascii') })
+            else:
+                return ({"message": "you are not signed up"})
+                
+        else:
+            return ({"message": "you must provide both a password and a username"})
+       
         
 
 class Addrecipe_category(Resource):
@@ -85,9 +110,9 @@ class Addrecipe_category(Resource):
         if response is None:
             return jsonify({'message': 'category doesnot exist'})
         category = RecipeCategory.query.filter_by(category_name = category_name)
-       # cat_id = RecipeCategory.query.filter_by(category_name = category_name)
+      
         return jsonify({'category_name': category_name})
-        #return jsonify({'username': 'category exists'})
+        
 
 class editcategory(Resource):
     '''function to update records'''
@@ -134,46 +159,17 @@ class Addrecipe(Resource):
             new_recipe.save_user()
             response = jsonify({'message': 'recipe successfully added', 'recipeid':recipe_id})
             return response
-            #return jsonify({'category_id': args['category_id'],'category_name': args['category_name']})
+            
         else:
-            #if recipe is not None:
+            
             return ({"message": "Recipe already exists"})
 
 
 
 
 
-class Login(Resource):
-    
-    def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('username', type = str)
-        parser.add_argument('password', type = str)
-        args = parser.parse_args()
-        username = args['username']
-        password = args['password']
-        #user = User.query.filter_by(username = username).first()
-        users = User.query.filter_by(username = username).first()
-        if users and password:
-            
-           
-            user = User.verify_password(username, password)
-            
-            if user:
-                token = g.user.generate_auth_token()
-                user = g.user
-                return jsonify({ 'token': token.decode('ascii') })
-            else:
-                return ({"message": "you are not signed up"})
-                
-        else:
-            return ({"message": "you must provide both a password and a username"})
 
 
-    # @auth.login_required
-    # def get():
-    #     token = g.user.generate_auth_token()
-    #     return jsonify({'token': token.decode('ascii')})
 
         
         

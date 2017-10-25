@@ -12,8 +12,8 @@ from app import app
 from app.app import db, api, auth, Session, app, create_app, session
 
 
-Base = declarative_base()
-secret_key = os.urandom(24)
+# Base = declarative_base()
+# secret_key = os.urandom(24)
 
 class User(db.Model):
     __tablename__ = 'user'
